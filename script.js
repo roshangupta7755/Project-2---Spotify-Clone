@@ -1,4 +1,4 @@
-console.log("GitHub Hosting Ready JS");
+console.log("GitHub Hosting Ready JS (Fixed)");
 
 let currentSong = new Audio();
 let songs = [];
@@ -16,8 +16,8 @@ function secondsToMinutesSeconds(seconds) {
 async function getSongs(folder) {
     currFolder = folder;
 
-    // ✅ GitHub Pages safe
-    let res = await fetch(`/${folder}/songs.json`);
+    // ✅ RELATIVE PATH (sub-folder hosting safe)
+    let res = await fetch(`${folder}/songs.json`);
     songs = await res.json();
 
     let songUL = document.querySelector(".songList ul");
@@ -51,24 +51,28 @@ async function getSongs(folder) {
 function playMusic(track, pause = false) {
     if (!track) return;
 
-    currentSong.src = `/${currFolder}/${track}`;
+    // ✅ RELATIVE PATH
+    currentSong.src = `${currFolder}/${track}`;
+
     if (!pause) {
         currentSong.play();
         play.src = "img/pause.svg";
     }
+
     document.querySelector(".songinfo").innerHTML = decodeURIComponent(track);
     document.querySelector(".songtime").innerHTML = "00:00 / 00:00";
 }
 
 /* ================= ALBUMS ================= */
 async function displayAlbums() {
-    // ✅ Static album list (GitHub Pages safe)
+    // ✅ STATIC LIST (GitHub Pages safe)
     const albums = ["ncs", "cs"];
     const cardContainer = document.querySelector(".cardContainer");
     cardContainer.innerHTML = "";
 
     for (const folder of albums) {
-        let res = await fetch(`/song/${folder}/info.json`);
+        // ✅ RELATIVE PATH
+        let res = await fetch(`song/${folder}/info.json`);
         let info = await res.json();
 
         cardContainer.innerHTML += `
@@ -78,7 +82,7 @@ async function displayAlbums() {
                     <path d="M5 20V4L19 12L5 20Z" fill="#000"/>
                 </svg>
             </div>
-            <img src="/song/${folder}/cover.jpg">
+            <img src="song/${folder}/cover.jpg">
             <h2>${info.title}</h2>
             <p>${info.description}</p>
         </div>`;
@@ -94,11 +98,13 @@ async function displayAlbums() {
 
 /* ================= MAIN ================= */
 async function main() {
+    // Default album
     await getSongs("song/ncs");
     playMusic(songs[0], true);
 
     await displayAlbums();
 
+    /* Play / Pause */
     play.addEventListener("click", () => {
         if (currentSong.paused) {
             currentSong.play();
@@ -109,6 +115,7 @@ async function main() {
         }
     });
 
+    /* Time update */
     currentSong.addEventListener("timeupdate", () => {
         document.querySelector(".songtime").innerHTML =
             `${secondsToMinutesSeconds(currentSong.currentTime)} / ${secondsToMinutesSeconds(currentSong.duration)}`;
@@ -116,13 +123,14 @@ async function main() {
             (currentSong.currentTime / currentSong.duration) * 100 + "%";
     });
 
+    /* Seekbar */
     document.querySelector(".seekbar").addEventListener("click", e => {
         let percent = (e.offsetX / e.target.clientWidth) * 100;
         document.querySelector(".circle").style.left = percent + "%";
         currentSong.currentTime = (currentSong.duration * percent) / 100;
     });
 
-    // ESC → refresh
+    /* ESC → refresh */
     document.addEventListener("keydown", e => {
         if (e.key === "Escape") location.reload();
     });
