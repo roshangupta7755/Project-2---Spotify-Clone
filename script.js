@@ -1,4 +1,4 @@
-console.log("GitHub Hosting Ready JS (Fixed)");
+console.log("GitHub Pages Fixed JS    ");
 
 let currentSong = new Audio();
 let songs = [];
@@ -16,7 +16,7 @@ function secondsToMinutesSeconds(seconds) {
 async function getSongs(folder) {
     currFolder = folder;
 
-    // ✅ RELATIVE PATH (sub-folder hosting safe)
+    // ✅ RELATIVE PATH (GitHub Pages safe)
     let res = await fetch(`${folder}/songs.json`);
     songs = await res.json();
 
@@ -65,13 +65,12 @@ function playMusic(track, pause = false) {
 
 /* ================= ALBUMS ================= */
 async function displayAlbums() {
-    // ✅ STATIC LIST (GitHub Pages safe)
-    const albums = ["ncs", "cs"];
+    // ⚠️ ONLY folders that actually exist
+    const albums = ["ncs"];
     const cardContainer = document.querySelector(".cardContainer");
     cardContainer.innerHTML = "";
 
     for (const folder of albums) {
-        // ✅ RELATIVE PATH
         let res = await fetch(`song/${folder}/info.json`);
         let info = await res.json();
 
@@ -98,13 +97,11 @@ async function displayAlbums() {
 
 /* ================= MAIN ================= */
 async function main() {
-    // Default album
     await getSongs("song/ncs");
     playMusic(songs[0], true);
 
     await displayAlbums();
 
-    /* Play / Pause */
     play.addEventListener("click", () => {
         if (currentSong.paused) {
             currentSong.play();
@@ -115,7 +112,6 @@ async function main() {
         }
     });
 
-    /* Time update */
     currentSong.addEventListener("timeupdate", () => {
         document.querySelector(".songtime").innerHTML =
             `${secondsToMinutesSeconds(currentSong.currentTime)} / ${secondsToMinutesSeconds(currentSong.duration)}`;
@@ -123,14 +119,12 @@ async function main() {
             (currentSong.currentTime / currentSong.duration) * 100 + "%";
     });
 
-    /* Seekbar */
     document.querySelector(".seekbar").addEventListener("click", e => {
         let percent = (e.offsetX / e.target.clientWidth) * 100;
         document.querySelector(".circle").style.left = percent + "%";
         currentSong.currentTime = (currentSong.duration * percent) / 100;
     });
 
-    /* ESC → refresh */
     document.addEventListener("keydown", e => {
         if (e.key === "Escape") location.reload();
     });
