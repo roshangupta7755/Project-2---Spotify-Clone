@@ -1,4 +1,4 @@
-console.log("GitHub Pages Fixed JS    ");
+console.log("GitHub.. Hosting Ready JS");
 
 let currentSong = new Audio();
 let songs = [];
@@ -15,14 +15,14 @@ function secondsToMinutesSeconds(seconds) {
 /* ================= SONGS ================= */
 async function getSongs(folder) {
     currFolder = folder;
-
-    // ✅ RELATIVE PATH (GitHub Pages safe)
+    // Fetch the static songs.json manifest (GitHub Pages safe)
     let res = await fetch(`${folder}/songs.json`);
     songs = await res.json();
 
     let songUL = document.querySelector(".songList ul");
     songUL.innerHTML = "";
 
+    // Populate the list of songs
     for (const song of songs) {
         songUL.innerHTML += `
         <li data-song="${song}">
@@ -38,6 +38,7 @@ async function getSongs(folder) {
         </li>`;
     }
 
+    // Add click handler to play a song
     document.querySelectorAll(".songList li").forEach(li => {
         li.addEventListener("click", () => {
             playMusic(li.dataset.song);
@@ -51,29 +52,26 @@ async function getSongs(folder) {
 function playMusic(track, pause = false) {
     if (!track) return;
 
-    // ✅ RELATIVE PATH
+    // Set audio source to the selected track file (relative path)
     currentSong.src = `${currFolder}/${track}`;
-
     if (!pause) {
         currentSong.play();
         play.src = "img/pause.svg";
     }
-
     document.querySelector(".songinfo").innerHTML = decodeURIComponent(track);
     document.querySelector(".songtime").innerHTML = "00:00 / 00:00";
 }
 
 /* ================= ALBUMS ================= */
 async function displayAlbums() {
-    // ⚠️ ONLY folders that actually exist
-    const albums = ["ncs"];
+    // Static list of album folders
+    const albums = ["ncs", "cs"];
     const cardContainer = document.querySelector(".cardContainer");
     cardContainer.innerHTML = "";
 
     for (const folder of albums) {
         let res = await fetch(`song/${folder}/info.json`);
         let info = await res.json();
-
         cardContainer.innerHTML += `
         <div data-folder="${folder}" class="card">
             <div class="play">
@@ -87,9 +85,11 @@ async function displayAlbums() {
         </div>`;
     }
 
+    // Clicking an album loads its songs and starts playing the first track
     document.querySelectorAll(".card").forEach(card => {
         card.addEventListener("click", async e => {
-            songs = await getSongs(`song/${e.currentTarget.dataset.folder}`);
+            const folder = e.currentTarget.dataset.folder;
+            songs = await getSongs(`song/${folder}`);
             playMusic(songs[0]);
         });
     });
@@ -97,11 +97,14 @@ async function displayAlbums() {
 
 /* ================= MAIN ================= */
 async function main() {
+    // Load default album (ncs) on start
     await getSongs("song/ncs");
     playMusic(songs[0], true);
 
+    // Display album cards
     await displayAlbums();
 
+    // Play/pause button logic
     play.addEventListener("click", () => {
         if (currentSong.paused) {
             currentSong.play();
@@ -112,6 +115,7 @@ async function main() {
         }
     });
 
+    // Update time display as song plays
     currentSong.addEventListener("timeupdate", () => {
         document.querySelector(".songtime").innerHTML =
             `${secondsToMinutesSeconds(currentSong.currentTime)} / ${secondsToMinutesSeconds(currentSong.duration)}`;
@@ -119,12 +123,14 @@ async function main() {
             (currentSong.currentTime / currentSong.duration) * 100 + "%";
     });
 
+    // Seekbar click to jump in song
     document.querySelector(".seekbar").addEventListener("click", e => {
         let percent = (e.offsetX / e.target.clientWidth) * 100;
         document.querySelector(".circle").style.left = percent + "%";
         currentSong.currentTime = (currentSong.duration * percent) / 100;
     });
 
+    // Press ESC to refresh page
     document.addEventListener("keydown", e => {
         if (e.key === "Escape") location.reload();
     });
