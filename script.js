@@ -1,4 +1,7 @@
 console.log("GitHub.. Hosting Ready JS");
+function getCurrentTrackName() {
+    return decodeURIComponent(currentSong.src.split("/").pop());
+}
 
 let currentSong = new Audio();
 let songs = [];
@@ -136,24 +139,29 @@ async function main() {
 
 	// Add an event listener to previous
 	previous.addEventListener("click", () => {
-		currentSong.pause()
-		console.log("Previous clicked")
-		let index = songs.indexOf(currentSong.src.split("/").slice(-1)[0])
-		if ((index - 1) >= 0) {
-			playMusic(songs[index - 1])
-		}
-	})
+    currentSong.pause();
+
+    let currentTrack = getCurrentTrackName();
+    let index = songs.indexOf(currentTrack);
+
+    if (index > 0) {
+        playMusic(songs[index - 1]);
+    }
+});
+
 
 	// Add an event listener to next
 	next.addEventListener("click", () => {
-		currentSong.pause()
-		console.log("Next clicked")
+    currentSong.pause();
 
-		let index = songs.indexOf(currentSong.src.split("/").slice(-1)[0])
-		if ((index + 1) < songs.length) {
-			playMusic(songs[index + 1])
-		}
-	})
+    let currentTrack = getCurrentTrackName();
+    let index = songs.indexOf(currentTrack);
+
+    if (index !== -1 && index + 1 < songs.length) {
+        playMusic(songs[index + 1]);
+    }
+});
+
 
 	// Add event to volume
 	document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("change", (e) => {
@@ -193,5 +201,6 @@ async function main() {
 }
 
 main();
+
 
 
