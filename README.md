@@ -1,4 +1,4 @@
-# 🎧 Spotify Clone – Web Development Project
+# 🎧 Spotify Clone – Web Development Project 
 
 A **Spotify-inspired music streaming web application** built using **HTML, CSS, and JavaScript** as part of my learning journey from the **Sigma Web Development Course by CodeWithHarry**.
 
