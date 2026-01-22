@@ -8,7 +8,7 @@ This project focuses on creating an interactive user interface, handling audio p
 
 ## 🚀 Live Demo
 🔗 **Live Project:**  
-[https://roshangupta7755.github.io/Project-2---Spotify-Clone/](https://roshangupta7755.github.io/Project---Spotify-Clone/)
+ https://roshangupta7755.github.io/Project---Spotify-Clone
 
 ---
 
