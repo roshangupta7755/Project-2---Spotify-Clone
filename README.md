@@ -42,8 +42,7 @@ https://github.com/roshangupta7755/Web-Development-with-code-with-Harry/tree/mai
 ---
 
 ## 📸 Preview
-
-> A screen recording video is attached in the repository to demonstrate:
+ 
 - UI responsiveness  
 - Audio controls  
 - Smooth user experience  
